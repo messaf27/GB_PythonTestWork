@@ -82,6 +82,18 @@ def read_data(data:list):
             
     return True        
 
+# Print one note as table 
+def print_note_table(note:list):
+        note_table = PrettyTable(LIST_TABLE_COLUMNS)
+        note_table.add_row([                
+                note[JS_NOTE_ID], 
+                note[JS_NOTE_TITLE], 
+                note[JS_NOTE_BODY], 
+                note[JS_NOTE_DATE],
+                note[JS_NOTE_TIME]
+        ])
+        print(note_table)
+
 # Note book output to terminal         
 def screen(data:list):
     itm_num = 0
@@ -89,8 +101,6 @@ def screen(data:list):
 
     if(read_data(data)):
         for idx in data:
-            itm_num +=1 
-            # note_book_table.add_row([itm_num, idx["last_name"], idx["name"], idx["surname"], idx["tel_num"]])
             note_book_table.add_row([ 
                 idx[JS_NOTE_ID], 
                 idx[JS_NOTE_TITLE], 
@@ -106,31 +116,28 @@ def screen(data:list):
 # Delete entry in phone book
 def delete_entry(data:list):
     list_len = len(data)
-       
+    note_book_table = PrettyTable(LIST_TABLE_COLUMNS)
+    
     while file_check_ok():
-        entry_num = int(input("Введите номер записи для удаления: "))
-        if(entry_num > list_len or entry_num < 1):
-            print("Неверный ввод, повторите попытку!") 
-        else:    
-            user_answer = input(f'Вы действительно хотите удалить: \n'
-                f'({entry_num}) '
-                f'{data[entry_num - 1][JS_NOTE_ID]} '
-                f'{data[entry_num - 1][JS_NOTE_TITLE]} '
-                f'{data[entry_num - 1][JS_NOTE_BODY]} '
-                f'{data[entry_num - 1][JS_NOTE_DATE]}'
-                f'{data[entry_num - 1][JS_NOTE_TIME]}'
-                '\n'
-                'Да(Д) / Нет(Н) ?: ')    
-            if(user_answer.lower() == 'д'):
-                data.pop(entry_num - 1)
-                write_data(data)
-                break
-            elif(user_answer.lower() == 'н'):
-                print("Удаление отменено, выходим в меню.")
-                break
-            else:
-                print("Ответ не определён, выходим в меню.")
-                break
+        entry_id = int(input("Введите номер записи для удаления: "))
+        for note_index in range(list_len):
+            if (int(data[note_index][JS_NOTE_ID]) == entry_id):
+                print('Вы действительно хотите удалить: ')
+                print_note_table(data[note_index])
+                user_answer = input('Да(Д) / Нет(Н) ?: ')       
+                            
+                if(user_answer.lower() == 'д'):
+                    data.pop(note_index)
+                    write_data(data)
+                    break
+                elif(user_answer.lower() == 'н'):
+                    print("Удаление отменено, выходим в меню.")
+                    break
+                else:
+                    print("Ответ не определён, выходим в меню.")
+                    break
+        # TODO: Продумать условия!!!    
+                
     else:
         print("Ошибка удаления записи (Файл отсутствует либо пуст)")        
 
