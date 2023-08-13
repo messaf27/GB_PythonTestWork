@@ -1,8 +1,3 @@
-# {"last_name": "Пупкин", "name": "Василий", "surname": "Степаныч", "tel_num": "+79143701845"}
-# {"last_name": "Орленок", "name": "Егор", "surname": "Юрьевич", "tel_num": "+79243138022"}
-# {"last_name": "Иванов", "name": "Иван", "surname": "Иванович", "tel_num": "8885557676"}
-# {"last_name": "Петров", "name": "Иннокентий", "surname": "Витальевич", "tel_num": "2465265465462"}
-
 # Заметка должна:
 # содержать идентификатор, заголовок, тело заметки и дату/время создания или
 # последнего изменения заметки.
@@ -34,8 +29,8 @@ LIST_TABLE_COLUMNS = (
 # Menu items
 MENU_ITEMS = (
     "Показать все заметки",
-    "Добавить запись",
-    "Удалить запись",
+    "Добавить заметку",
+    "Удалить заметку",
     "Выйти из программы"
 )
 
@@ -43,9 +38,8 @@ MENU_ITEMS = (
 JS_NOTE_ID = "id"
 JS_NOTE_TITLE = "title"
 JS_NOTE_BODY = "body"
-JS_NOTE_DATE = "data"
+JS_NOTE_DATE = "date"
 JS_NOTE_TIME = "time"
-
 
 
 def file_check_ok():
@@ -67,7 +61,9 @@ def write_data(data:list):
 
 # Read phone book file
 def read_data(data:list):
+    # Clear data
     data.clear()
+    
     if(file_check_ok()):
         try:
             with open(NOTE_BOOK_FILE_PATH, "r", encoding="UTF-8") as file:
@@ -75,6 +71,11 @@ def read_data(data:list):
                     jstring = line.strip()
                     note_line = json.loads(jstring)
                     data.append(note_line)
+                    
+                # Sorted data and time
+                data = sorted(data, key=lambda x: datetime.strptime(x['date'], '%Y-%m-%d'), reverse=False)   
+                # data = sorted(data, key=lambda x: datetime.strptime(x['time'], '%H:%M:%S.%ms'), reverse=False) 
+                    
         except: 
             print(f'Возникли ошибки при чтении файла {NOTE_BOOK_FILE_PATH}')    
             return False
@@ -149,7 +150,6 @@ def add_entry(data:list):
     list_len = len(data) + 1
     entry = dict()
     
-    # format_dict = {"last_name": "Пупкин", "name":"Василий", "surname":"Степаныч", "tel_num":"+79143701845"}
     title_name = input("Ведите Заголовок: ")
     note_text = input("Ведите Заметку: ")
 
@@ -168,7 +168,7 @@ def add_entry(data:list):
         print(f'Возникли ошибки при записи файла файла {NOTE_BOOK_FILE_PATH}')
         return
     
-    print("Запись успешно добавлена")       
+    print("Заметка успешно добавлена")       
 
 # Output menu to terminal
 def menu():
