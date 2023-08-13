@@ -180,13 +180,11 @@ def menu():
     while True:
         print()
         print(f"{'=' * int((NOTE_BOOK_TABLE_LEN / 2) - (len(TITLE_NAME_NOTE_BOOK) + 2))} {TITLE_NAME_NOTE_BOOK} {NOTE_BOOK_VERSION} {'=' * int((NOTE_BOOK_TABLE_LEN / 2) - 3)}")
-        
+
         if(file_check_ok() == False or read_data(note_book_list) == False):
             print('Файл заметок пуст или отсутствует, для начала создайте заметку!')
 
         print(f"{'-' * int((NOTE_BOOK_TABLE_LEN / 2) - (len(TITLE_MENU) + 3))} {TITLE_MENU} {'-' * (int(NOTE_BOOK_TABLE_LEN / 2) + 2)}")
-        
-
 
         for m_itm in range(len(MENU_ITEMS)):
             print(f'[{m_itm + 1}] {MENU_ITEMS[m_itm]}')
