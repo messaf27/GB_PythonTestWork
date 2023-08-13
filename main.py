@@ -49,7 +49,9 @@ JS_NOTE_TIME = "time"
 
 
 def file_check_ok():
-    if(os.path.exists(NOTE_BOOK_FILE_PATH) and os.path.isfile(NOTE_BOOK_FILE_PATH)):
+    if(os.path.exists(NOTE_BOOK_FILE_PATH) \
+    and os.path.isfile(NOTE_BOOK_FILE_PATH)) \
+    and (os.path.getsize(NOTE_BOOK_FILE_PATH) != 0):
         return True
     
     return False
@@ -77,7 +79,7 @@ def read_data(data:list):
             print(f'Возникли ошибки при чтении файла {NOTE_BOOK_FILE_PATH}')    
             return False
     else:
-         print(f"Файл заметок (\"{NOTE_BOOK_FILE_PATH}\") не найден в дирректории!!!")    
+         print(f"Файл заметок (\"{NOTE_BOOK_FILE_PATH}\") пуст или не найден в дирректории!!!")    
          return False
             
     return True        
@@ -118,8 +120,8 @@ def delete_entry(data:list):
     list_len = len(data)
     note_book_table = PrettyTable(LIST_TABLE_COLUMNS)
     
-    while file_check_ok():
-        entry_id = int(input("Введите номер записи для удаления: "))
+    if file_check_ok():
+        entry_id = int(input("Введите ID записи для удаления: "))
         for note_index in range(list_len):
             if (int(data[note_index][JS_NOTE_ID]) == entry_id):
                 print('Вы действительно хотите удалить: ')
@@ -136,8 +138,9 @@ def delete_entry(data:list):
                 else:
                     print("Ответ не определён, выходим в меню.")
                     break
-        # TODO: Продумать условия!!!    
-                
+            elif(note_index == list_len - 1):
+                print("ID заметки не найден!")
+                break
     else:
         print("Ошибка удаления записи (Файл отсутствует либо пуст)")        
 
@@ -171,14 +174,20 @@ def add_entry(data:list):
 def menu():
     item_num = 0
     note_book_list = list()
-    # need_exit  = False
+    # need_exit  = False     
 
     # while not need_exit:
     while True:
         print()
         print(f"{'=' * int((NOTE_BOOK_TABLE_LEN / 2) - (len(TITLE_NAME_NOTE_BOOK) + 2))} {TITLE_NAME_NOTE_BOOK} {NOTE_BOOK_VERSION} {'=' * int((NOTE_BOOK_TABLE_LEN / 2) - 3)}")
+        
+        if(file_check_ok() == False or read_data(note_book_list) == False):
+            print('Файл заметок пуст или отсутствует, для начала создайте заметку!')
+
         print(f"{'-' * int((NOTE_BOOK_TABLE_LEN / 2) - (len(TITLE_MENU) + 3))} {TITLE_MENU} {'-' * (int(NOTE_BOOK_TABLE_LEN / 2) + 2)}")
         
+
+
         for m_itm in range(len(MENU_ITEMS)):
             print(f'[{m_itm + 1}] {MENU_ITEMS[m_itm]}')
             
